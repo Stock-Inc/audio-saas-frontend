@@ -1,21 +1,72 @@
-import { Button } from "@/components/ui/button"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+
+import { AppLayout } from "@/components/layout/app-layout"
+import { AuthLayout } from "@/components/layout/auth-layout"
+import { LoginPage } from "@/pages/auth/login-page"
+import { RegisterPage } from "@/pages/auth/register-page"
+import { FoldersPage } from "@/pages/folders/folders-page"
+import { IntegrationsPage } from "@/pages/integrations/integrations-page"
+import { ProcessingPage } from "@/pages/recordings/processing-page"
+import { RecordingPage } from "@/pages/recordings/recording-page"
+import { RecordingsPage } from "@/pages/recordings/recordings-page"
+import { UploadPage } from "@/pages/recordings/upload-page"
 
 export function App() {
-  return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route element={<AppLayout />}>
+                    <Route
+                        path="/"
+                        element={<RecordingsPage />}
+                    />
+                    <Route
+                        path="/recordings"
+                        element={<RecordingsPage />}
+                    />
+                    <Route
+                        path="/upload"
+                        element={<UploadPage />}
+                    />
+                    <Route
+                        path="/folders"
+                        element={<FoldersPage />}
+                    />
+                    <Route
+                        path="/integrations"
+                        element={<IntegrationsPage />}
+                    />
+                    <Route
+                        path="/recordings/:recordingId/processing"
+                        element={<ProcessingPage />}
+                    />
+                    <Route
+                        path="/recordings/:recordingId"
+                        element={<RecordingPage />}
+                    />
+                </Route>
+                <Route element={<AuthLayout />}>
+                    <Route
+                        path="/login"
+                        element={<LoginPage />}
+                    />
+                    <Route
+                        path="/register"
+                        element={<RegisterPage />}
+                    />
+                </Route>
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to="/"
+                            replace
+                        />
+                    }
+                />
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App
