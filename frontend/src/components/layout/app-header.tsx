@@ -30,7 +30,7 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                                     to={item.to}
                                     end={item.to === "/"}
                                     className={({ isActive }) =>
-                                        `font-mono text-[11px] transition-colors hover:text-foreground ${isActive ? "text-foreground" : "text-muted-foreground"}`
+                                        `font-mono text-xs transition-colors hover:text-foreground ${isActive ? "text-foreground" : "text-muted-foreground"}`
                                     }
                                 >
                                     {item.label}
@@ -39,7 +39,7 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                         </nav>
                         <Link
                             to="/login"
-                            className="ml-auto hidden font-mono text-[11px] text-foreground sm:inline"
+                            className="ml-auto hidden font-mono text-xs text-foreground sm:inline"
                         >
                             alnoer
                         </Link>

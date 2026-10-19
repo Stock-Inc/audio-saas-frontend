@@ -20,7 +20,7 @@ function AudioDropzone() {
         <div className="space-y-2">
             <Card className="flex min-h-32 items-center justify-center gap-0 border border-border/60 bg-card px-4 py-5 text-center shadow-none ring-0">
                 <h2 className="font-serif text-base">Загрузите аудиозапись</h2>
-                <p className="mt-3 font-mono text-[10px] text-muted-foreground">
+                <p className="mt-3 font-mono text-xs text-muted-foreground">
                     Перетащите файл сюда или выберите его на устройстве.
                 </p>
                 <Label
@@ -37,8 +37,8 @@ function AudioDropzone() {
                 />
             </Card>
             <Card className="gap-1 border border-border/60 bg-card p-3 shadow-none ring-0">
-                <p className="font-mono text-[10px]">Конфиденциальность по умолчанию</p>
-                <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
+                <p className="font-mono text-xs">Конфиденциальность по умолчанию</p>
+                <p className="font-mono text-xs leading-relaxed text-muted-foreground">
                     Файлы доступны только вам. После обработки исходный файл можно удалить автоматически.
                 </p>
             </Card>
@@ -57,9 +57,9 @@ function SettingSelect({
 }) {
     return (
         <div className="grid items-center gap-2 sm:grid-cols-[1fr_1.05fr]">
-            <span className="font-mono text-[10px]">{label}</span>
+            <span className="font-mono text-xs">{label}</span>
             <Select defaultValue={defaultValue}>
-                <SelectTrigger className="h-7 w-full border border-border/70 bg-card px-2 font-mono text-[10px]">
+                <SelectTrigger className="h-7 w-full border border-border/70 bg-card px-2 font-mono text-xs">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -91,8 +91,8 @@ function ProcessingSettings() {
             />
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-mono text-[10px]">Разделение спикеров</p>
-                    <p className="font-mono text-[9px] text-muted-foreground">Включено</p>
+                    <p className="font-mono text-xs">Разделение спикеров</p>
+                    <p className="font-mono text-xs text-muted-foreground">Включено</p>
                 </div>
                 <Switch
                     defaultChecked
@@ -101,8 +101,8 @@ function ProcessingSettings() {
             </div>
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-mono text-[10px]">ИИ-коррекция текста</p>
-                    <p className="font-mono text-[9px] text-muted-foreground">Включена</p>
+                    <p className="font-mono text-xs">ИИ-коррекция текста</p>
+                    <p className="font-mono text-xs text-muted-foreground">Включена</p>
                 </div>
                 <Switch
                     defaultChecked
@@ -141,7 +141,7 @@ function UploadQueue() {
         <section className="mt-12">
             <div className="mb-3 flex items-center justify-between gap-4">
                 <h2 className="text-base">Очередь загрузки</h2>
-                <p className="font-mono text-[10px] text-muted-foreground">2 файла · 126 МБ</p>
+                <p className="font-mono text-xs text-muted-foreground">2 файла · 126 МБ</p>
             </div>
             <Card className="gap-0 border border-border/60 bg-card p-2 shadow-none ring-0">
                 {uploadQueue.map((file) => (
@@ -149,7 +149,7 @@ function UploadQueue() {
                         key={file.name}
                         className="flex items-center justify-between gap-4 px-1 py-2"
                     >
-                        <div className="min-w-0 font-mono text-[10px]">
+                        <div className="min-w-0 font-mono text-xs">
                             <p className="truncate">{file.name}</p>
                             <p className="mt-0.5 text-muted-foreground">
                                 {file.duration} · {file.size}

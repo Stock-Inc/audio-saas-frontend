@@ -36,7 +36,7 @@ export function RegisterPage() {
                     />
                     <Label
                         htmlFor="accept-terms"
-                        className="font-mono text-[9px] font-normal normal-case tracking-normal text-muted-foreground"
+                        className="font-mono text-xs font-normal normal-case tracking-normal text-muted-foreground"
                     >
                         Согласен с условиями использования и политикой данных
                     </Label>
@@ -47,7 +47,7 @@ export function RegisterPage() {
                 >
                     Создать аккаунт
                 </Button>
-                <p className="text-center font-mono text-[9px] text-muted-foreground">
+                <p className="text-center font-mono text-xs text-muted-foreground">
                     Уже есть аккаунт?{" "}
                     <Link
                         to="/login"

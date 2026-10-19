@@ -28,9 +28,9 @@ function Statistics() {
                     key={item.label}
                     className="gap-0 border border-border/60 bg-card p-4 shadow-none ring-0 sm:min-h-24"
                 >
-                    <p className="font-mono text-[11px] text-muted-foreground">{item.label}</p>
-                    <p className="mt-0.5 font-serif text-[28px] leading-none">{item.value}</p>
-                    <p className="mt-2 font-mono text-[10px] text-muted-foreground">{item.note}</p>
+                    <p className="font-mono text-xs text-muted-foreground">{item.label}</p>
+                    <p className="mt-0.5 font-serif text-3xl leading-none">{item.value}</p>
+                    <p className="mt-2 font-mono text-xs text-muted-foreground">{item.note}</p>
                 </Card>
             ))}
         </div>
@@ -40,13 +40,13 @@ function Statistics() {
 function RecordingsTable() {
     return (
         <Card className="gap-0 border border-border/60 bg-card p-2.5 shadow-none ring-0">
-            <Table className="font-mono text-[11px]">
+            <Table className="font-mono text-xs">
                 <TableHeader className="bg-muted/60 [&_tr]:border-0">
                     <TableRow className="border-0 hover:bg-transparent">
-                        <TableHead className="h-7 px-2 text-[10px] font-normal normal-case">Запись</TableHead>
-                        <TableHead className="h-7 px-2 text-[10px] font-normal normal-case">Длительность</TableHead>
-                        <TableHead className="h-7 px-2 text-[10px] font-normal normal-case">Статус</TableHead>
-                        <TableHead className="h-7 px-2 text-[10px] font-normal normal-case">Спикеры</TableHead>
+                        <TableHead className="h-7 px-2 text-xs font-normal normal-case">Запись</TableHead>
+                        <TableHead className="h-7 px-2 text-xs font-normal normal-case">Длительность</TableHead>
+                        <TableHead className="h-7 px-2 text-xs font-normal normal-case">Статус</TableHead>
+                        <TableHead className="h-7 px-2 text-xs font-normal normal-case">Спикеры</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -104,7 +104,7 @@ export function RecordingsPage() {
                             type="search"
                             aria-label="Поиск по записям"
                             placeholder="Поиск по записям"
-                            className="h-8 w-44 border border-border/70 bg-card px-2 font-mono text-[10px] sm:w-48"
+                            className="h-8 w-44 border border-border/70 bg-card px-2 font-mono text-xs sm:w-48"
                         />
                         <Button
                             variant="secondary"

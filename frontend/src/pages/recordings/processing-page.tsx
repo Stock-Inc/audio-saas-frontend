@@ -16,7 +16,7 @@ function ProcessingOverview() {
     return (
         <Card className="max-w-sm gap-2 border border-border/60 bg-card p-4 shadow-none ring-0 sm:min-h-32">
             <h2 className="font-serif text-base">Обработка записи</h2>
-            <ul className="space-y-1 font-mono text-[10px] text-muted-foreground">
+            <ul className="space-y-1 font-mono text-xs text-muted-foreground">
                 <li>✓ Предварительная обработка аудио</li>
                 <li>✓ Распознавание речи</li>
                 <li className="text-primary">◉ Разделение спикеров</li>
@@ -34,7 +34,7 @@ function ProcessingStages() {
                 {stages.map((stage) => (
                     <div
                         key={stage.label}
-                        className="flex flex-wrap items-center justify-between gap-2 py-1 font-mono text-[10px]"
+                        className="flex flex-wrap items-center justify-between gap-2 py-1 font-mono text-xs"
                     >
                         <div className="flex min-w-0 items-center gap-3">
                             <span className="shrink-0 text-muted-foreground">{stage.time}</span>
@@ -69,7 +69,7 @@ export function ProcessingPage() {
             />
             <ProcessingOverview />
             <ProcessingStages />
-            <Card className="mt-3 gap-0 border border-border/60 bg-card p-3 font-mono text-[10px] text-muted-foreground shadow-none ring-0">
+            <Card className="mt-3 gap-0 border border-border/60 bg-card p-3 font-mono text-xs text-muted-foreground shadow-none ring-0">
                 Можно закрыть вкладку — прогресс сохранится, и мы пришлём уведомление.
             </Card>
         </>

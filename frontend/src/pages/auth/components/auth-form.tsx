@@ -14,9 +14,9 @@ export function AuthCard({
     children: ReactNode
 }) {
     return (
-        <Card className="w-full max-w-[256px] gap-0 border border-border/60 bg-card p-5 shadow-none ring-0">
-            <h1 className="text-[22px] leading-tight">{title}</h1>
-            <p className="mt-2 font-mono text-[9px] text-muted-foreground">
+        <Card className="w-full max-w-xs gap-0 border border-border/60 bg-card p-5 shadow-none ring-0">
+            <h1 className="text-2xl leading-tight">{title}</h1>
+            <p className="mt-2 font-mono text-xs text-muted-foreground">
                 {description}
             </p>
             {children}
@@ -39,7 +39,7 @@ export function AuthField({
         <div className="space-y-1">
             <Label
                 htmlFor={id}
-                className="font-mono text-[9px] font-normal text-muted-foreground"
+                className="font-mono text-xs font-normal text-muted-foreground"
             >
                 {label}
             </Label>
@@ -47,7 +47,7 @@ export function AuthField({
                 id={id}
                 type={type}
                 placeholder={placeholder}
-                className="h-7 border border-border/70 px-2 font-mono text-[10px]"
+                className="h-7 border border-border/70 px-2 font-mono text-xs"
             />
         </div>
     )

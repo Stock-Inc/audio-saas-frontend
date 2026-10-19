@@ -24,14 +24,14 @@ const resultCards = [
 
 function TranscriptPanel() {
     return (
-        <Card className="min-h-[288px] gap-2 border border-border/60 bg-card p-4 shadow-none ring-0">
+        <Card className="min-h-72 gap-2 border border-border/60 bg-card p-4 shadow-none ring-0">
             <h2 className="font-serif text-base">Расшифровка и результаты ИИ</h2>
             <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
                 <div className="space-y-2">
                     {transcript.map((line) => (
                         <div
                             key={line.time}
-                            className="font-mono text-[10px] leading-relaxed"
+                            className="font-mono text-xs leading-relaxed"
                         >
                             <p className="text-primary">
                                 {line.time} / {line.speaker}
@@ -40,7 +40,7 @@ function TranscriptPanel() {
                         </div>
                     ))}
                 </div>
-                <Card className="h-fit gap-1 border-0 bg-muted/70 p-2.5 font-mono text-[10px] shadow-none ring-0">
+                <Card className="h-fit gap-1 border-0 bg-muted/70 p-2.5 font-mono text-xs shadow-none ring-0">
                     <h3>Сводка и решения</h3>
                     <p>Сначала запустить загрузку и расшифровку. Экспорт добавим в следующем обновлении.</p>
                     <p className="text-muted-foreground">Задача / подготовить обработку записей</p>
@@ -69,7 +69,7 @@ function ResultCards() {
                             </Badge>
                         )}
                     </div>
-                    <p className="font-mono text-[10px] leading-relaxed text-muted-foreground">
+                    <p className="font-mono text-xs leading-relaxed text-muted-foreground">
                         {item.text}
                     </p>
                 </Card>

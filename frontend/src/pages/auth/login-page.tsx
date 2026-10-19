@@ -32,12 +32,12 @@ export function LoginPage() {
                         />
                         <Label
                             htmlFor="remember-me"
-                            className="font-mono text-[9px] font-normal normal-case tracking-normal text-muted-foreground"
+                            className="font-mono text-xs font-normal normal-case tracking-normal text-muted-foreground"
                         >
                             Запомнить меня
                         </Label>
                     </div>
-                    <span className="font-mono text-[9px] text-primary">Забыли пароль?</span>
+                    <span className="font-mono text-xs text-primary">Забыли пароль?</span>
                 </div>
                 <Button
                     type="button"
@@ -45,7 +45,7 @@ export function LoginPage() {
                 >
                     Войти
                 </Button>
-                <p className="text-center font-mono text-[9px] text-muted-foreground">
+                <p className="text-center font-mono text-xs text-muted-foreground">
                     Нет аккаунта?{" "}
                     <Link
                         to="/register"
