@@ -4,12 +4,11 @@ const navigation = [
     { label: "Обзор", to: "/" },
     { label: "Записи", to: "/recordings" },
     { label: "Папки", to: "/folders" },
-    { label: "Интеграции", to: "/integrations" },
 ]
 
 export function AppHeader({ compact = false }: { compact?: boolean }) {
     return (
-        <header className="border-b border-border/60 bg-card">
+        <header className="border-b border-border/60 bg-card p-2">
             <div className="mx-auto flex h-10 w-full max-w-7xl items-center px-5 sm:px-7">
                 <Link
                     to="/"
@@ -30,7 +29,7 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                                     to={item.to}
                                     end={item.to === "/"}
                                     className={({ isActive }) =>
-                                        `font-mono text-xs transition-colors hover:text-foreground ${isActive ? "text-foreground" : "text-muted-foreground"}`
+                                        `font-mono text-sm transition-colors hover:text-foreground ${isActive ? "text-foreground" : "text-muted-foreground"}`
                                     }
                                 >
                                     {item.label}
@@ -39,9 +38,9 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                         </nav>
                         <Link
                             to="/login"
-                            className="ml-auto hidden font-mono text-xs text-foreground sm:inline"
+                            className="ml-auto hidden font-mono text-sm text-foreground sm:inline"
                         >
-                            alnoer
+                            user
                         </Link>
                     </>
                 )}

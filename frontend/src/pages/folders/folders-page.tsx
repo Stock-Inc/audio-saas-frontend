@@ -21,9 +21,9 @@ export function FoldersPage() {
                     to={item.path}
                     className="block"
                 >
-                    <Card className="flex min-h-7 flex-row items-center justify-between gap-3 border border-border/40 bg-card px-2 py-1.5 font-mono text-xs shadow-none ring-0 transition-colors hover:bg-muted">
+                    <Card className="flex min-h-7 text-sm flex-row items-center justify-between gap-3 border border-border/40 bg-card px-2 py-1.5 font-mono shadow-none ring-0 transition-colors hover:bg-muted">
                         <span>{item.name}</span>
-                        <span className="text-muted-foreground">Дата</span>
+                        <span className="text-muted-foreground text-xs">Дата</span>
                     </Card>
                 </Link>
             ))}

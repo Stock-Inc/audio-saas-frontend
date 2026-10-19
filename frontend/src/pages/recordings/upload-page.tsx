@@ -19,7 +19,7 @@ function AudioDropzone() {
     return (
         <div className="space-y-2">
             <Card className="flex min-h-32 items-center justify-center gap-0 border border-border/60 bg-card px-4 py-5 text-center shadow-none ring-0">
-                <h2 className="font-serif text-base">Загрузите аудиозапись</h2>
+                <h2 className="text-base">Загрузите аудиозапись</h2>
                 <p className="mt-3 font-mono text-xs text-muted-foreground">
                     Перетащите файл сюда или выберите его на устройстве.
                 </p>
@@ -150,7 +150,7 @@ function UploadQueue() {
                         className="flex items-center justify-between gap-4 px-1 py-2"
                     >
                         <div className="min-w-0 font-mono text-xs">
-                            <p className="truncate">{file.name}</p>
+                            <p className="truncate text-sm">{file.name}</p>
                             <p className="mt-0.5 text-muted-foreground">
                                 {file.duration} · {file.size}
                             </p>

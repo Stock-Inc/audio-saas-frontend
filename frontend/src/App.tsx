@@ -5,7 +5,6 @@ import { AuthLayout } from "@/components/layout/auth-layout"
 import { LoginPage } from "@/pages/auth/login-page"
 import { RegisterPage } from "@/pages/auth/register-page"
 import { FoldersPage } from "@/pages/folders/folders-page"
-import { IntegrationsPage } from "@/pages/integrations/integrations-page"
 import { ProcessingPage } from "@/pages/recordings/processing-page"
 import { RecordingPage } from "@/pages/recordings/recording-page"
 import { RecordingsPage } from "@/pages/recordings/recordings-page"
@@ -31,10 +30,6 @@ export function App() {
                     <Route
                         path="/folders"
                         element={<FoldersPage />}
-                    />
-                    <Route
-                        path="/integrations"
-                        element={<IntegrationsPage />}
                     />
                     <Route
                         path="/recordings/:recordingId/processing"
