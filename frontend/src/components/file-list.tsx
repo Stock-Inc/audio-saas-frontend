@@ -9,10 +9,10 @@ const folderRows = [
     ...Array.from({ length: 8 }, () => ({ name: "Интервью", path: "/recordings/user-interview" })),
 ]
 
-export function FoldersPage() {
+export function FileList() {
     return (
         <section
-            aria-label="Папки и файлы"
+            aria-label="Список файлов и папок"
             className="mx-auto mt-0 flex w-full max-w-80 flex-col gap-3"
         >
             {folderRows.map((item, index) => (

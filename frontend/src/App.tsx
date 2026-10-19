@@ -4,7 +4,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { AuthLayout } from "@/components/layout/auth-layout"
 import { LoginPage } from "@/pages/auth/login-page"
 import { RegisterPage } from "@/pages/auth/register-page"
-import { FoldersPage } from "@/pages/folders/folders-page"
+import { OverviewPage } from "@/pages/overview/overview-page"
 import { ProcessingPage } from "@/pages/recordings/processing-page"
 import { RecordingPage } from "@/pages/recordings/recording-page"
 import { RecordingsPage } from "@/pages/recordings/recordings-page"
@@ -17,7 +17,7 @@ export function App() {
                 <Route element={<AppLayout />}>
                     <Route
                         path="/"
-                        element={<RecordingsPage />}
+                        element={<OverviewPage />}
                     />
                     <Route
                         path="/recordings"
@@ -26,10 +26,6 @@ export function App() {
                     <Route
                         path="/upload"
                         element={<UploadPage />}
-                    />
-                    <Route
-                        path="/folders"
-                        element={<FoldersPage />}
                     />
                     <Route
                         path="/recordings/:recordingId/processing"

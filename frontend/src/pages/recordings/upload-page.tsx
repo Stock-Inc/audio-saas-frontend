@@ -2,7 +2,7 @@ import { Link } from "react-router"
 
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
@@ -57,9 +57,9 @@ function SettingSelect({
 }) {
     return (
         <div className="grid items-center gap-2 sm:grid-cols-[1fr_1.05fr]">
-            <span className="font-mono text-xs">{label}</span>
+            <span className="font-mono text-sm">{label}</span>
             <Select defaultValue={defaultValue}>
-                <SelectTrigger className="h-7 w-full border border-border/70 bg-card px-2 font-mono text-xs">
+                <SelectTrigger className="h-7 w-full border border-border/70 bg-card px-2 font-mono text-sm">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -91,8 +91,7 @@ function ProcessingSettings() {
             />
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-mono text-xs">Разделение спикеров</p>
-                    <p className="font-mono text-xs text-muted-foreground">Включено</p>
+                    <p className="font-mono text-sm">Разделение спикеров</p>
                 </div>
                 <Switch
                     defaultChecked
@@ -101,8 +100,7 @@ function ProcessingSettings() {
             </div>
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="font-mono text-xs">ИИ-коррекция текста</p>
-                    <p className="font-mono text-xs text-muted-foreground">Включена</p>
+                    <p className="font-mono text-sm">ИИ-коррекция текста</p>
                 </div>
                 <Switch
                     defaultChecked
@@ -118,13 +116,6 @@ function ProcessingSettings() {
                 ]}
             />
             <div className="flex justify-end gap-1.5">
-                <Button
-                    variant="secondary"
-                    size="xs"
-                    className="normal-case tracking-normal"
-                >
-                    Сохранить пресет
-                </Button>
                 <Link
                     to="/recordings/weekly-sync/processing"
                     className={buttonVariants({ size: "xs", className: "normal-case tracking-normal" })}
