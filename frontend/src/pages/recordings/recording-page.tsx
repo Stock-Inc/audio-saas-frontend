@@ -1,7 +1,12 @@
+import { Navigate, useParams } from "react-router"
+
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { recordings } from "@/data/demo"
+import { getFileBreadcrumbs } from "@/lib/file-path"
 
 const transcript = [
     {
@@ -79,11 +84,27 @@ function ResultCards() {
 }
 
 export function RecordingPage() {
+    const { recordingId } = useParams()
+    const recording = recordings.find((item) => item.id === recordingId)
+
+    if (!recording) {
+        return (
+            <Navigate
+                to="/recordings"
+                replace
+            />
+        )
+    }
+
     return (
         <>
+            <div className="mb-4">
+                <Breadcrumbs
+                    items={getFileBreadcrumbs(recording.folderId, recording.name)}
+                />
+            </div>
             <PageHeading
-                eyebrow="Записи / Интервью"
-                title="Интервью с пользователем"
+                title={recording.name}
                 action={
                     <div className="flex gap-1.5">
                         <Button

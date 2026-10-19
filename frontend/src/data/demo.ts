@@ -1,9 +1,83 @@
-export const recordings = [
-    { name: "Встреча по продукту", duration: "32:14", status: "Готово", speakers: 4, path: "/recordings/product-meeting" },
-    { name: "Техническое интервью", duration: "48:06", status: "Расшифровка", speakers: 2, path: "/recordings/technical-interview" },
-    { name: "Интервью с пользователем", duration: "21:37", status: "Обработка ИИ", speakers: 3, path: "/recordings/user-interview" },
-    { name: "Еженедельная встреча", duration: "16:52", status: "Готово", speakers: 5, path: "/recordings/weekly-sync" },
+export type DemoFolder = {
+    id: string
+    name: string
+    parentId: string | null
+}
+
+export type DemoRecording = {
+    id: string
+    name: string
+    duration: string
+    status: string
+    speakers: number
+    folderId: string | null
+    path: string
+}
+
+export const folders: DemoFolder[] = [
+    { id: "interviews", name: "Интервью", parentId: null },
+    { id: "product", name: "Продукт", parentId: null },
+    { id: "archive", name: "Архив", parentId: null },
+    { id: "user-research", name: "Исследования пользователей", parentId: "interviews" },
+    { id: "roadmap", name: "Планирование", parentId: "product" },
 ]
+
+export const recordings: DemoRecording[] = [
+    {
+        id: "product-meeting",
+        name: "Встреча по продукту",
+        duration: "32:14",
+        status: "Готово",
+        speakers: 4,
+        folderId: "roadmap",
+        path: "/recordings/product-meeting",
+    },
+    {
+        id: "technical-interview",
+        name: "Техническое интервью",
+        duration: "48:06",
+        status: "Расшифровка",
+        speakers: 2,
+        folderId: "interviews",
+        path: "/recordings/technical-interview",
+    },
+    {
+        id: "user-interview",
+        name: "Интервью с пользователем",
+        duration: "21:37",
+        status: "Обработка ИИ",
+        speakers: 3,
+        folderId: "user-research",
+        path: "/recordings/user-interview",
+    },
+    {
+        id: "weekly-sync",
+        name: "Еженедельная встреча",
+        duration: "16:52",
+        status: "Готово",
+        speakers: 5,
+        folderId: null,
+        path: "/recordings/weekly-sync",
+    },
+]
+
+export function getFolderPath(folderId: string | null): DemoFolder[] {
+    const path: DemoFolder[] = []
+    let currentId = folderId
+
+    while (currentId) {
+        const folder = folders.find((item) => item.id === currentId)
+
+        if (!folder) {
+            break
+        }
+
+        path.unshift(folder)
+        currentId = folder.parentId
+    }
+
+    return path
+}
 
 export const uploadQueue = [
     { name: "product-interview-07.mp3", duration: "48:06", size: "86 МБ" },

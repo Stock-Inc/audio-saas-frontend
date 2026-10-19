@@ -37,7 +37,7 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                         </nav>
                         <Link
                             to="/login"
-                            className="ml-auto hidden font-mono text-sm text-foreground sm:inline"
+                            className="ml-auto font-mono text-sm text-foreground"
                         >
                             user
                         </Link>

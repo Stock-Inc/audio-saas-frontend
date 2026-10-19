@@ -1,5 +1,5 @@
-import { FileList } from "@/components/file-list"
+import { FileBrowser } from "@/components/file-browser/file-browser"
 
 export function RecordingsPage() {
-    return <FileList />
+    return <FileBrowser />
 }

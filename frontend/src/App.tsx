@@ -5,10 +5,12 @@ import { AuthLayout } from "@/components/layout/auth-layout"
 import { LoginPage } from "@/pages/auth/login-page"
 import { RegisterPage } from "@/pages/auth/register-page"
 import { OverviewPage } from "@/pages/overview/overview-page"
+import { FolderPage } from "@/pages/recordings/folder-page"
 import { ProcessingPage } from "@/pages/recordings/processing-page"
 import { RecordingPage } from "@/pages/recordings/recording-page"
 import { RecordingsPage } from "@/pages/recordings/recordings-page"
 import { UploadPage } from "@/pages/recordings/upload-page"
+import { SearchPage } from "@/pages/search/search-page"
 
 export function App() {
     return (
@@ -22,6 +24,14 @@ export function App() {
                     <Route
                         path="/recordings"
                         element={<RecordingsPage />}
+                    />
+                    <Route
+                        path="/recordings/folders/:folderId"
+                        element={<FolderPage />}
+                    />
+                    <Route
+                        path="/search"
+                        element={<SearchPage />}
                     />
                     <Route
                         path="/upload"
