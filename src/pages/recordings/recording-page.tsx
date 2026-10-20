@@ -36,7 +36,7 @@ function TranscriptPanel() {
                     {transcript.map((line) => (
                         <div
                             key={line.time}
-                            className="font-mono text-xs leading-relaxed"
+                            className="font-mono text-sm leading-relaxed"
                         >
                             <p className="text-primary">
                                 {line.time} / {line.speaker}
@@ -45,7 +45,7 @@ function TranscriptPanel() {
                         </div>
                     ))}
                 </div>
-                <Card className="h-fit gap-1 border-0 bg-muted/70 p-2.5 font-mono text-xs shadow-none ring-0">
+                <Card className="h-fit gap-1 border-0 bg-muted/70 p-2.5 font-mono text-sm shadow-none ring-0">
                     <h3>Сводка и решения</h3>
                     <p>Сначала запустить загрузку и расшифровку. Экспорт добавим в следующем обновлении.</p>
                     <p className="text-muted-foreground">Задача / подготовить обработку записей</p>

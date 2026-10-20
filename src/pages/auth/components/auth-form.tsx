@@ -14,9 +14,9 @@ export function AuthCard({
     children: ReactNode
 }) {
     return (
-        <Card className="w-full max-w-xs gap-0 border border-border/60 bg-card p-5 shadow-none ring-0">
+        <Card className="w-full max-w-sm gap-0 border border-border/60 bg-card p-5 shadow-none ring-0">
             <h1 className="text-2xl leading-tight">{title}</h1>
-            <p className="mt-2 font-mono text-xs text-muted-foreground">
+            <p className="mt-2 font-mono text-sm text-muted-foreground">
                 {description}
             </p>
             {children}
