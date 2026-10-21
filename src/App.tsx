@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout/app-layout"
 import { AuthLayout } from "@/components/layout/auth-layout"
 import { LoginPage } from "@/pages/auth/login-page"
 import { RegisterPage } from "@/pages/auth/register-page"
+import { HistoryPage } from "@/pages/history/history-page"
 import { OverviewPage } from "@/pages/overview/overview-page"
 import { FolderPage } from "@/pages/recordings/folder-page"
 import { ProcessingPage } from "@/pages/recordings/processing-page"
@@ -24,6 +25,10 @@ export function App() {
                     <Route
                         path="/recordings"
                         element={<RecordingsPage />}
+                    />
+                    <Route
+                        path="/history"
+                        element={<HistoryPage />}
                     />
                     <Route
                         path="/recordings/folders/:folderId"

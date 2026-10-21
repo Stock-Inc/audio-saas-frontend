@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router"
 const navigation = [
     { label: "Обзор", to: "/" },
     { label: "Записи", to: "/recordings" },
+    { label: "История", to: "/history" },
 ]
 
 export function AppHeader({ compact = false }: { compact?: boolean }) {
