@@ -5,6 +5,7 @@ import type { DemoFolder, DemoRecording } from "@/data/demo"
 export type DemoLibrary = {
     folders: DemoFolder[]
     recordings: DemoRecording[]
+    createFolder: (name: string, parentId: string | null) => void
     deleteFolder: (folderId: string) => void
     deleteRecording: (recordingId: string) => void
 }

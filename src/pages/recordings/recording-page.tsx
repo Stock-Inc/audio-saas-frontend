@@ -85,7 +85,7 @@ function ResultCards() {
 
 export function RecordingPage() {
     const { recordingId } = useParams()
-    const { recordings } = useDemoLibrary()
+    const { folders, recordings } = useDemoLibrary()
     const recording = recordings.find((item) => item.id === recordingId)
 
     if (!recording) {
@@ -101,7 +101,11 @@ export function RecordingPage() {
         <>
             <div className="mb-4">
                 <Breadcrumbs
-                    items={getFileBreadcrumbs(recording.folderId, recording.name)}
+                    items={getFileBreadcrumbs(
+                        recording.folderId,
+                        recording.name,
+                        folders
+                    )}
                 />
             </div>
             <PageHeading

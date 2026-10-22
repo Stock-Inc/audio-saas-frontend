@@ -75,12 +75,15 @@ export const recordings: DemoRecording[] = [
     },
 ]
 
-export function getFolderPath(folderId: string | null): DemoFolder[] {
+export function getFolderPath(
+    folderId: string | null,
+    availableFolders: DemoFolder[]
+): DemoFolder[] {
     const path: DemoFolder[] = []
     let currentId = folderId
 
     while (currentId) {
-        const folder = folders.find((item) => item.id === currentId)
+        const folder = availableFolders.find((item) => item.id === currentId)
 
         if (!folder) {
             break
