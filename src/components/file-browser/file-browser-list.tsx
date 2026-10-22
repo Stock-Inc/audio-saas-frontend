@@ -1,39 +1,49 @@
-import { RiArrowRightSLine, RiFileMusicLine, RiFolderLine } from "@remixicon/react"
-import { Link } from "react-router"
+import {
+    RiArrowRightSLine,
+    RiFileMusicLine,
+    RiFolderLine,
+} from "@remixicon/react"
 
-import { folders, recordings, type DemoFolder, type DemoRecording } from "@/data/demo"
+import { FileContextMenu } from "@/components/file-browser/file-context-menu"
+import type { DemoFolder, DemoRecording } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 
 function FolderRow({ folder }: { folder: DemoFolder }) {
     return (
-        <Link
-            to={`/recordings/folders/${folder.id}`}
+        <FileContextMenu
+            folder={folder}
             className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50"
         >
             <RiFolderLine className="size-5 shrink-0 text-primary" />
             <span className="min-w-0 flex-1 truncate text-sm">{folder.name}</span>
             <span className="hidden font-mono text-xs text-muted-foreground sm:inline">Папка</span>
             <RiArrowRightSLine className="size-4 shrink-0 text-muted-foreground" />
-        </Link>
+        </FileContextMenu>
     )
 }
 
 function RecordingRow({ recording }: { recording: DemoRecording }) {
     return (
-        <Link
-            to={recording.path}
+        <FileContextMenu
+            recording={recording}
             className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50"
         >
             <RiFileMusicLine className="size-5 shrink-0 text-muted-foreground" />
             <span className="min-w-0 flex-1 truncate text-sm">{recording.name}</span>
             <span className="font-mono text-xs text-muted-foreground">{recording.duration}</span>
             <RiArrowRightSLine className="size-4 shrink-0 text-muted-foreground" />
-        </Link>
+        </FileContextMenu>
     )
 }
 
 export function FileBrowserList({ folderId }: { folderId: string | null }) {
-    const childFolders = folders.filter((folder) => folder.parentId === folderId)
-    const childRecordings = recordings.filter((recording) => recording.folderId === folderId)
+    const { folders, recordings } = useDemoLibrary()
+    const childFolders = folders.filter(
+        (folder) => folder.parentId === folderId
+    )
+    const childRecordings = recordings.filter(
+        (recording) => recording.folderId === folderId
+    )
 
     if (childFolders.length === 0 && childRecordings.length === 0) {
         return (

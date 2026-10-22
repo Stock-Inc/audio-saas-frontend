@@ -5,7 +5,7 @@ import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { recordings } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 import { getFileBreadcrumbs } from "@/lib/file-path"
 
 const transcript = [
@@ -85,6 +85,7 @@ function ResultCards() {
 
 export function RecordingPage() {
     const { recordingId } = useParams()
+    const { recordings } = useDemoLibrary()
     const recording = recordings.find((item) => item.id === recordingId)
 
     if (!recording) {

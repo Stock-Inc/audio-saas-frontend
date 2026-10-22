@@ -1,10 +1,11 @@
 import { Navigate, useParams } from "react-router"
 
 import { FileBrowser } from "@/components/file-browser/file-browser"
-import { folders } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 
 export function FolderPage() {
     const { folderId } = useParams()
+    const { folders } = useDemoLibrary()
     const folder = folders.find((item) => item.id === folderId)
 
     if (!folder) {

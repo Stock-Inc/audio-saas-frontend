@@ -13,7 +13,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { recordings } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 
 const statistics = [
     { label: "Обработано аудио", value: "42,8 часа", note: "+18 записей за месяц" },
@@ -37,7 +37,11 @@ function Statistics() {
     )
 }
 
-function RecordingsTable() {
+function RecordingsTable({
+    recordings,
+}: {
+    recordings: ReturnType<typeof useDemoLibrary>["recordings"]
+}) {
     return (
         <Card className="gap-0 border border-border/60 bg-card p-2.5 shadow-none ring-0">
             <Table className="font-mono text-xs">
@@ -82,6 +86,8 @@ function RecordingsTable() {
 }
 
 export function OverviewPage() {
+    const { recordings } = useDemoLibrary()
+
     return (
         <>
             <PageHeading
@@ -115,7 +121,7 @@ export function OverviewPage() {
                         </Button>
                     </div>
                 </div>
-                <RecordingsTable />
+                <RecordingsTable recordings={recordings} />
             </section>
         </>
     )

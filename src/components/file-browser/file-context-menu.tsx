@@ -1,0 +1,85 @@
+import type { ReactNode } from "react"
+import { Link, useNavigate } from "react-router"
+
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import type { DemoFolder, DemoRecording } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
+
+type FileContextMenuProps = {
+    children: ReactNode
+    className: string
+} & (
+    | { recording: DemoRecording; folder?: never }
+    | { folder: DemoFolder; recording?: never }
+)
+
+export function FileContextMenu({
+    children,
+    className,
+    folder,
+    recording,
+}: FileContextMenuProps) {
+    const navigate = useNavigate()
+    const { deleteFolder, deleteRecording } = useDemoLibrary()
+    const path = recording?.path ?? `/recordings/folders/${folder?.id}`
+    const name = recording?.fileName ?? folder?.name
+
+    function handleDelete() {
+        const message = folder
+            ? `Удалить папку «${folder.name}» и все вложенные записи?`
+            : `Удалить запись «${recording?.name}»?`
+
+        if (!window.confirm(message)) {
+            return
+        }
+
+        if (folder) {
+            deleteFolder(folder.id)
+        } else if (recording) {
+            deleteRecording(recording.id)
+        }
+    }
+
+    return (
+        <ContextMenu>
+            <ContextMenuTrigger
+                render={
+                    <Link
+                        to={path}
+                        aria-label={`Открыть ${name}`}
+                    />
+                }
+                className={className}
+            >
+                {children}
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+                <ContextMenuItem onClick={() => navigate(path)}>
+                    Открыть
+                </ContextMenuItem>
+                {recording && (
+                    <ContextMenuItem
+                        onClick={() =>
+                            navigate(`/recordings/${recording.id}/processing`)
+                        }
+                    >
+                        Повторный анализ
+                    </ContextMenuItem>
+                )}
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                    variant="destructive"
+                    onClick={handleDelete}
+                >
+                    Удалить
+                </ContextMenuItem>
+            </ContextMenuContent>
+        </ContextMenu>
+    )
+}

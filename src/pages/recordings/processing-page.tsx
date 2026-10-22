@@ -1,9 +1,10 @@
-import { Link } from "react-router"
+import { Link, Navigate, useParams } from "react-router"
 
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 
 const stages = [
     { time: "14:32:08", label: "Предварительная обработка аудио", status: "Завершено" },
@@ -54,10 +55,23 @@ function ProcessingStages() {
 }
 
 export function ProcessingPage() {
+    const { recordingId } = useParams()
+    const { recordings } = useDemoLibrary()
+    const recording = recordings.find((item) => item.id === recordingId)
+
+    if (!recording) {
+        return (
+            <Navigate
+                to="/recordings"
+                replace
+            />
+        )
+    }
+
     return (
         <>
             <PageHeading
-                title="Разбор weekly-sync.m4a"
+                title={`Разбор ${recording.fileName}`}
                 action={
                     <Link
                         to="/recordings"

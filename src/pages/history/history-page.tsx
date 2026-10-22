@@ -1,12 +1,15 @@
 import { RiArrowRightSLine, RiFileMusicLine } from "@remixicon/react"
 import { Link } from "react-router"
 
+import { FileContextMenu } from "@/components/file-browser/file-context-menu"
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { recordings } from "@/data/demo"
+import { useDemoLibrary } from "@/lib/demo-library-context"
 
 export function HistoryPage() {
+    const { recordings } = useDemoLibrary()
+
     return (
         <>
             <PageHeading
@@ -43,9 +46,8 @@ export function HistoryPage() {
                     <ul className="space-y-1.5">
                         {recordings.map((recording) => (
                             <li key={recording.id}>
-                                <Link
-                                    to={recording.path}
-                                    aria-label={`Открыть анализ файла ${recording.fileName}`}
+                                <FileContextMenu
+                                    recording={recording}
                                     className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                                 >
                                     <RiFileMusicLine
@@ -72,7 +74,7 @@ export function HistoryPage() {
                                         className="size-4 shrink-0 text-muted-foreground"
                                         aria-hidden="true"
                                     />
-                                </Link>
+                                </FileContextMenu>
                             </li>
                         ))}
                     </ul>
