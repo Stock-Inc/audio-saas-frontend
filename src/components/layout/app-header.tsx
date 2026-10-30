@@ -48,12 +48,9 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                                 </NavLink>
                             ))}
                         </nav>
-                        <Link
-                            to="/login"
-                            className="order-2 ml-auto font-mono text-sm text-foreground md:order-none"
-                        >
+                        <span className="order-2 ml-auto font-mono text-sm text-foreground md:order-none">
                             user
-                        </Link>
+                        </span>
                     </>
                 )}
             </div>
