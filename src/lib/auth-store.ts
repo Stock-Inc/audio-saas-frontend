@@ -3,11 +3,17 @@ import { create } from "zustand"
 type AuthStatus =
     "idle" | "checking" | "authenticated" | "unauthenticated" | "error"
 
+export type AuthProfile = {
+    id: string | number
+    username: string | null
+    email: string
+}
+
 type AuthState = {
     status: AuthStatus
-    profile: unknown | null
+    profile: AuthProfile | null
     setChecking: () => void
-    setAuthenticated: (profile: unknown) => void
+    setAuthenticated: (profile: AuthProfile) => void
     setUnauthenticated: () => void
     setError: () => void
 }

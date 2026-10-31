@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore, type AuthProfile } from "@/lib/auth-store"
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(/\/+$/, "")
 
@@ -29,7 +29,7 @@ export function checkAuth() {
     })
         .then(async (response) => {
             if (response.status === 200) {
-                const profile: unknown = await response.json()
+                const profile = (await response.json()) as AuthProfile
                 useAuthStore.getState().setAuthenticated(profile)
                 return
             }

@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router"
 
 import { buttonVariants } from "@/components/ui/button"
+import { useAuthStore } from "@/lib/auth-store"
 
 const navigation = [
     { label: "Обзор", to: "/" },
@@ -9,6 +10,10 @@ const navigation = [
 ]
 
 export function AppHeader({ compact = false }: { compact?: boolean }) {
+    const displayName = useAuthStore(
+        (state) => state.profile?.username ?? state.profile?.email
+    )
+
     return (
         <header className="border-b border-border/60 bg-card p-2">
             <div className="mx-auto flex min-h-10 w-full max-w-7xl flex-wrap items-center gap-y-2 px-5 sm:px-7">
@@ -48,8 +53,11 @@ export function AppHeader({ compact = false }: { compact?: boolean }) {
                                 </NavLink>
                             ))}
                         </nav>
-                        <span className="order-2 ml-auto font-mono text-sm text-foreground md:order-none">
-                            user
+                        <span
+                            className="order-2 ml-auto max-w-40 truncate font-mono text-sm text-foreground md:order-none md:max-w-56"
+                            title={displayName}
+                        >
+                            {displayName}
                         </span>
                     </>
                 )}
