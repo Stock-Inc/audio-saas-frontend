@@ -1,4 +1,4 @@
-import { useAuthStore, type AuthProfile } from "@/lib/auth-store"
+import { useAuthStore, type AuthProfile } from "@/lib/stores/auth-store"
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(/\/+$/, "")
 

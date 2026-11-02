@@ -3,7 +3,7 @@ import type { ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { checkAuth, keycloakLoginUrl } from "@/lib/auth"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/stores/auth-store"
 
 export function AuthGate({ children }: { children: ReactNode }) {
     const status = useAuthStore((state) => state.status)

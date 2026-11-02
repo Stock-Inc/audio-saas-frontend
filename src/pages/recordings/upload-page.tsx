@@ -1,8 +1,9 @@
-import { Link } from "react-router"
+import { RiCloseLine } from "@remixicon/react"
+import { useRef, useState, type ChangeEvent, type DragEvent } from "react"
 
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import {
@@ -13,33 +14,113 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { uploadQueue } from "@/data/demo"
+import { useUploadStore } from "@/lib/stores/upload-store"
+
+function isAudioFile(file: File) {
+    return (
+        file.type.startsWith("audio/") ||
+        /\.(aac|flac|m4a|mp3|ogg|opus|wav|wma)$/i.test(file.name)
+    )
+}
+
+function formatFileSize(bytes: number) {
+    const megabyte = 1024 * 1024
+    const size = bytes >= megabyte ? bytes / megabyte : bytes / 1024
+    const unit = bytes >= megabyte ? "МБ" : "КБ"
+
+    return `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 }).format(size)} ${unit}`
+}
 
 function AudioDropzone() {
+    const [isDragging, setIsDragging] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const dragDepth = useRef(0)
+    const addFiles = useUploadStore((state) => state.addFiles)
+
+    function addAudioFiles(files: File[]) {
+        const audioFiles = files.filter(isAudioFile)
+        const rejectedCount = files.length - audioFiles.length
+
+        if (audioFiles.length > 0) {
+            addFiles(audioFiles)
+        }
+
+        setError(
+            rejectedCount > 0
+                ? `Не добавлено файлов: ${rejectedCount}. Выберите аудиофайлы.`
+                : null
+        )
+    }
+
+    function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+        addAudioFiles(Array.from(event.target.files ?? []))
+        event.target.value = ""
+    }
+
+    function handleDragEnter(event: DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        dragDepth.current += 1
+        setIsDragging(true)
+    }
+
+    function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        dragDepth.current -= 1
+
+        if (dragDepth.current <= 0) {
+            dragDepth.current = 0
+            setIsDragging(false)
+        }
+    }
+
+    function handleDrop(event: DragEvent<HTMLDivElement>) {
+        event.preventDefault()
+        dragDepth.current = 0
+        setIsDragging(false)
+        addAudioFiles(Array.from(event.dataTransfer.files))
+    }
+
     return (
         <div className="space-y-2">
-            <Card className="flex min-h-32 items-center justify-center gap-0 border border-border/60 bg-card px-4 py-5 text-center shadow-none ring-0">
+            <Card
+                onDragEnter={handleDragEnter}
+                onDragOver={(event) => event.preventDefault()}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`flex min-h-32 items-center justify-center gap-0 border bg-card px-4 py-5 text-center shadow-none ring-0 transition-colors ${isDragging ? "border-primary bg-primary/5" : "border-border/60"}`}
+            >
                 <h2 className="text-base">Загрузите аудиозапись</h2>
                 <p className="mt-3 font-mono text-xs text-muted-foreground">
-                    Перетащите файл сюда или выберите его на устройстве.
+                    Перетащите аудиофайлы сюда или выберите их на устройстве.
                 </p>
                 <Label
                     htmlFor="audio-file"
-                    className={`${buttonVariants({ size: "xs" })} mt-3 normal-case tracking-normal`}
+                    className={`${buttonVariants({ size: "xs" })} mt-3 tracking-normal normal-case`}
                 >
                     Выбрать аудио
                 </Label>
                 <input
                     id="audio-file"
                     type="file"
-                    accept="audio/*"
+                    accept="audio/*,.m4a,.mp3,.wav,.flac,.ogg,.aac,.opus,.wma"
+                    multiple
+                    onChange={handleFileChange}
                     className="sr-only"
                 />
             </Card>
+            {error && (
+                <p
+                    role="alert"
+                    className="font-mono text-xs text-destructive"
+                >
+                    {error}
+                </p>
+            )}
             <Card className="gap-1 border border-border/60 bg-card p-3 shadow-none ring-0">
-                <p className="font-mono text-xs">Конфиденциальность по умолчанию</p>
+                <p className="font-mono text-xs">Файлы ещё не отправлены</p>
                 <p className="font-mono text-xs leading-relaxed text-muted-foreground">
-                    Файлы доступны только вам. После обработки исходный файл можно удалить автоматически.
+                    Выбранные файлы остаются в браузере до обновления страницы.
+                    Отправка на сервер пока недоступна.
                 </p>
             </Card>
         </div>
@@ -116,42 +197,66 @@ function ProcessingSettings() {
                 ]}
             />
             <div className="flex justify-end gap-1.5">
-                <Link
-                    to="/recordings/weekly-sync/processing"
-                    className={buttonVariants({ size: "xs", className: "normal-case tracking-normal" })}
+                <Button
+                    type="button"
+                    size="xs"
+                    disabled
+                    className="tracking-normal normal-case"
                 >
                     Начать обработку
-                </Link>
+                </Button>
             </div>
         </Card>
     )
 }
 
 function UploadQueue() {
+    const files = useUploadStore((state) => state.files)
+    const removeFile = useUploadStore((state) => state.removeFile)
+    const totalSize = files.reduce((size, item) => size + item.file.size, 0)
+
     return (
         <section className="mt-12">
             <div className="mb-3 flex items-center justify-between gap-4">
                 <h2 className="text-base">Очередь загрузки</h2>
-                <p className="font-mono text-xs text-muted-foreground">2 файла · 126 МБ</p>
+                <p className="font-mono text-xs text-muted-foreground">
+                    Файлов: {files.length} · {formatFileSize(totalSize)}
+                </p>
             </div>
             <Card className="gap-0 border border-border/60 bg-card p-2 shadow-none ring-0">
-                {uploadQueue.map((file) => (
+                {files.length === 0 && (
+                    <p className="px-1 py-4 font-mono text-xs text-muted-foreground">
+                        Файлы пока не выбраны.
+                    </p>
+                )}
+                {files.map(({ id, file }) => (
                     <div
-                        key={file.name}
+                        key={id}
                         className="flex items-center justify-between gap-4 px-1 py-2"
                     >
                         <div className="min-w-0 font-mono text-xs">
                             <p className="truncate text-sm">{file.name}</p>
                             <p className="mt-0.5 text-muted-foreground">
-                                {file.duration} · {file.size}
+                                {formatFileSize(file.size)}
                             </p>
                         </div>
-                        <Badge
-                            variant="secondary"
-                            className="bg-muted px-2 py-1 font-normal tracking-normal"
-                        >
-                            Готов к загрузке
-                        </Badge>
+                        <div className="flex shrink-0 items-center gap-2">
+                            <Badge
+                                variant="secondary"
+                                className="bg-muted px-2 py-1 font-normal tracking-normal"
+                            >
+                                Готов к загрузке
+                            </Badge>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon-xs"
+                                aria-label={`Убрать ${file.name} из очереди`}
+                                onClick={() => removeFile(id)}
+                            >
+                                <RiCloseLine className="size-4" />
+                            </Button>
+                        </div>
                     </div>
                 ))}
             </Card>

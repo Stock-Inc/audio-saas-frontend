@@ -95,8 +95,3 @@ export function getFolderPath(
 
     return path
 }
-
-export const uploadQueue = [
-    { name: "product-interview-07.mp3", duration: "48:06", size: "86 МБ" },
-    { name: "weekly-sync.m4a", duration: "16:52", size: "40 МБ" },
-]

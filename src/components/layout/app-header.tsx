@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router"
 
 import { buttonVariants } from "@/components/ui/button"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/stores/auth-store"
 
 const navigation = [
     { label: "Обзор", to: "/" },
