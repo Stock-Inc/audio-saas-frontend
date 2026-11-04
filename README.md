@@ -1,25 +1,11 @@
-# React + TypeScript + Vite + shadcn/ui
+# Фронт
+TypeScript + React с использованием компонентов shadcn/ui.
 
-This is a template for a new Vite project with React, TypeScript, and shadcn/ui.
+Для конвертации файлов используется ffmpeg.
 
-## Backend
+Авторизация через куки.
 
-Set `VITE_BACKEND_URL` in `.env.local` to the backend origin (see `.env.example`). Authentication requests include cookies, so the backend must allow credentialed requests from the frontend origin.
+## Запуск
+Для запуска необходимо установить переменную окружения VITE_BACKEND_URL.
 
-## Adding components
-
-To add components to your app, run the following command:
-
-```bash
-npx shadcn@latest add button
-```
-
-This will place the ui components in the `src/components` directory.
-
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button"
-```
+Затем `bun dev` (пока без докера)
