@@ -45,6 +45,16 @@ export function ProcessingSettings() {
             }
         }
     }
+    
+    const languageOptions = [
+        { value: "auto", label: "Автоопределение" },
+        { value: "ru", label: "Русский" },
+    ]
+    
+    const summaryOptions = [
+        { value: "decisions", label: "Решения и задачи" },
+        { value: "summary", label: "Только краткое содержание" },
+    ]     
 
     return (
         <Card className="gap-3 border border-border/60 bg-card p-4 shadow-none ring-0">
@@ -52,10 +62,7 @@ export function ProcessingSettings() {
             <SettingSelect
                 label="Язык записи"
                 defaultValue="auto"
-                options={[
-                    { value: "auto", label: "Автоопределение" },
-                    { value: "ru", label: "Русский" },
-                ]}
+                options={languageOptions}
             />
             <div className="flex items-center justify-between">
                 <div>
@@ -76,12 +83,9 @@ export function ProcessingSettings() {
                 />
             </div>
             <SettingSelect
-                label="Краткое содержание"
+                label="Суммаризация"
                 defaultValue="decisions"
-                options={[
-                    { value: "decisions", label: "Решения и задачи" },
-                    { value: "summary", label: "Только краткое содержание" },
-                ]}
+                options={summaryOptions}
             />
             <div className="flex justify-end gap-1.5">
                 <Button
