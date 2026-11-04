@@ -14,12 +14,18 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { convertToWav } from "@/lib/convert-to-wav"
 import { useUploadStore } from "@/lib/stores/upload-store"
 
-function isAudioFile(file: File) {
+const maxInputSize = 2 * 1024 * 1024 * 1024
+
+function isMediaFile(file: File) {
     return (
         file.type.startsWith("audio/") ||
-        /\.(aac|flac|m4a|mp3|ogg|opus|wav|wma)$/i.test(file.name)
+        file.type.startsWith("video/") ||
+        /\.(aac|avi|flac|m4a|m4v|mkv|mov|mp3|mp4|mpeg|mpg|ogg|opus|wav|webm|wma|wmv)$/i.test(
+            file.name
+        )
     )
 }
 
@@ -31,29 +37,31 @@ function formatFileSize(bytes: number) {
     return `${new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 }).format(size)} ${unit}`
 }
 
-function AudioDropzone() {
+function MediaDropzone() {
     const [isDragging, setIsDragging] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const dragDepth = useRef(0)
     const addFiles = useUploadStore((state) => state.addFiles)
 
-    function addAudioFiles(files: File[]) {
-        const audioFiles = files.filter(isAudioFile)
-        const rejectedCount = files.length - audioFiles.length
+    function addMediaFiles(files: File[]) {
+        const mediaFiles = files.filter(
+            (file) => isMediaFile(file) && file.size < maxInputSize
+        )
+        const rejectedCount = files.length - mediaFiles.length
 
-        if (audioFiles.length > 0) {
-            addFiles(audioFiles)
+        if (mediaFiles.length > 0) {
+            addFiles(mediaFiles)
         }
 
         setError(
             rejectedCount > 0
-                ? `Не добавлено файлов: ${rejectedCount}. Выберите аудиофайлы.`
+                ? `Не добавлено файлов: ${rejectedCount}. Выберите аудио или видео размером до 2 ГБ.`
                 : null
         )
     }
 
     function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-        addAudioFiles(Array.from(event.target.files ?? []))
+        addMediaFiles(Array.from(event.target.files ?? []))
         event.target.value = ""
     }
 
@@ -77,7 +85,7 @@ function AudioDropzone() {
         event.preventDefault()
         dragDepth.current = 0
         setIsDragging(false)
-        addAudioFiles(Array.from(event.dataTransfer.files))
+        addMediaFiles(Array.from(event.dataTransfer.files))
     }
 
     return (
@@ -89,20 +97,20 @@ function AudioDropzone() {
                 onDrop={handleDrop}
                 className={`flex min-h-32 items-center justify-center gap-0 border bg-card px-4 py-5 text-center shadow-none ring-0 transition-colors ${isDragging ? "border-primary bg-primary/5" : "border-border/60"}`}
             >
-                <h2 className="text-base">Загрузите аудиозапись</h2>
+                <h2 className="text-base">Выберите аудио или видео</h2>
                 <p className="mt-3 font-mono text-xs text-muted-foreground">
-                    Перетащите аудиофайлы сюда или выберите их на устройстве.
+                    Перетащите файлы сюда или выберите их на устройстве.
                 </p>
                 <Label
-                    htmlFor="audio-file"
+                    htmlFor="media-file"
                     className={`${buttonVariants({ size: "xs" })} mt-3 tracking-normal normal-case`}
                 >
-                    Выбрать аудио
+                    Выбрать файлы
                 </Label>
                 <input
-                    id="audio-file"
+                    id="media-file"
                     type="file"
-                    accept="audio/*,.m4a,.mp3,.wav,.flac,.ogg,.aac,.opus,.wma"
+                    accept="audio/*,video/*,.aac,.avi,.flac,.m4a,.m4v,.mkv,.mov,.mp3,.mp4,.mpeg,.mpg,.ogg,.opus,.wav,.webm,.wma,.wmv"
                     multiple
                     onChange={handleFileChange}
                     className="sr-only"
@@ -117,10 +125,10 @@ function AudioDropzone() {
                 </p>
             )}
             <Card className="gap-1 border border-border/60 bg-card p-3 shadow-none ring-0">
-                <p className="font-mono text-xs">Файлы ещё не отправлены</p>
+                <p className="font-mono text-xs">Обработка идёт в браузере</p>
                 <p className="font-mono text-xs leading-relaxed text-muted-foreground">
-                    Выбранные файлы остаются в браузере до обновления страницы.
-                    Отправка на сервер пока недоступна.
+                    Исходные файлы и готовые WAV доступны до обновления
+                    страницы. Отправка на сервер пока недоступна.
                 </p>
             </Card>
         </div>
@@ -159,6 +167,46 @@ function SettingSelect({
 }
 
 function ProcessingSettings() {
+    const files = useUploadStore((state) => state.files)
+    const isConverting = files.some((item) => item.status === "converting")
+    const hasPendingFiles = files.some(
+        (item) => item.status === "queued" || item.status === "error"
+    )
+
+    async function handleConvert() {
+        const store = useUploadStore.getState()
+        if (store.files.some((item) => item.status === "converting")) return
+
+        const pendingFiles = store.files.filter(
+            (item) => item.status === "queued" || item.status === "error"
+        )
+
+        for (const item of pendingFiles) {
+            if (
+                !useUploadStore
+                    .getState()
+                    .files.some((file) => file.id === item.id)
+            ) {
+                continue
+            }
+
+            useUploadStore.getState().setConverting(item.id)
+            try {
+                const wavFile = await convertToWav(item.file, item.id)
+                useUploadStore.getState().setConverted(item.id, wavFile)
+            } catch (error) {
+                useUploadStore
+                    .getState()
+                    .setConversionError(
+                        item.id,
+                        error instanceof Error
+                            ? error.message
+                            : "Не удалось конвертировать файл"
+                    )
+            }
+        }
+    }
+
     return (
         <Card className="gap-3 border border-border/60 bg-card p-4 shadow-none ring-0">
             <h2 className="text-base">Параметры обработки</h2>
@@ -200,10 +248,11 @@ function ProcessingSettings() {
                 <Button
                     type="button"
                     size="xs"
-                    disabled
+                    disabled={!hasPendingFiles || isConverting}
+                    onClick={() => void handleConvert()}
                     className="tracking-normal normal-case"
                 >
-                    Начать обработку
+                    {isConverting ? "Загрузка..." : "Загрузить"}
                 </Button>
             </div>
         </Card>
@@ -229,7 +278,7 @@ function UploadQueue() {
                         Файлы пока не выбраны.
                     </p>
                 )}
-                {files.map(({ id, file }) => (
+                {files.map(({ id, file, wavFile, status, error }) => (
                     <div
                         key={id}
                         className="flex items-center justify-between gap-4 px-1 py-2"
@@ -238,20 +287,59 @@ function UploadQueue() {
                             <p className="truncate text-sm">{file.name}</p>
                             <p className="mt-0.5 text-muted-foreground">
                                 {formatFileSize(file.size)}
+                                {wavFile &&
+                                    ` → ${wavFile.name} · ${formatFileSize(wavFile.size)}`}
                             </p>
+                            {error && (
+                                <p
+                                    className="mt-1 text-destructive"
+                                    role="alert"
+                                >
+                                    {error}
+                                </p>
+                            )}
                         </div>
                         <div className="flex shrink-0 items-center gap-2">
                             <Badge
-                                variant="secondary"
-                                className="bg-muted px-2 py-1 font-normal tracking-normal"
+                                variant={
+                                    status === "error"
+                                        ? "destructive"
+                                        : "secondary"
+                                }
+                                className="px-2 py-1 font-normal tracking-normal"
                             >
-                                Готов к загрузке
+                                {status === "queued" && "В очереди"}
+                                {status === "converting" && "Конвертация"}
+                                {status === "ready" && "WAV готов"}
+                                {status === "error" && "Ошибка"}
                             </Badge>
+                            {wavFile && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="xs"
+                                    className="tracking-normal normal-case"
+                                    onClick={() => {
+                                        const url = URL.createObjectURL(wavFile)
+                                        const link = document.createElement("a")
+                                        link.href = url
+                                        link.download = wavFile.name
+                                        link.click()
+                                        window.setTimeout(
+                                            () => URL.revokeObjectURL(url),
+                                            60_000
+                                        )
+                                    }}
+                                >
+                                    Скачать
+                                </Button>
+                            )}
                             <Button
                                 type="button"
                                 variant="ghost"
                                 size="icon-xs"
                                 aria-label={`Убрать ${file.name} из очереди`}
+                                disabled={status === "converting"}
                                 onClick={() => removeFile(id)}
                             >
                                 <RiCloseLine className="size-4" />
@@ -267,9 +355,9 @@ function UploadQueue() {
 export function UploadPage() {
     return (
         <>
-            <PageHeading title="Загрузите аудиозапись" />
+            <PageHeading title="Загрузите аудио или видео" />
             <div className="grid gap-3 md:grid-cols-2 md:items-start">
-                <AudioDropzone />
+                <MediaDropzone />
                 <ProcessingSettings />
             </div>
             <UploadQueue />
