@@ -8,7 +8,7 @@ import { FolderPage } from "@/pages/recordings/folder-page"
 import { ProcessingPage } from "@/pages/recordings/processing-page"
 import { RecordingPage } from "@/pages/recordings/recording-page"
 import { RecordingsPage } from "@/pages/recordings/recordings-page"
-import { UploadPage } from "@/pages/recordings/upload-page"
+import { UploadPage } from "@/pages/recordings/upload/upload-page"
 import { SearchPage } from "@/pages/search/search-page"
 
 export function App() {
