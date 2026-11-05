@@ -4,7 +4,7 @@ export type QueuedAudioFile = {
     id: string
     file: File
     wavFile: File | null
-    status: "queued" | "converting" | "ready" | "error"
+    status: "queued" | "converting" | "ready" | "uploading" | "uploaded" | "error"
     error: string | null
 }
 
@@ -14,6 +14,8 @@ type UploadState = {
     removeFile: (id: string) => void
     setConverting: (id: string) => void
     setConverted: (id: string, wavFile: File) => void
+    setUploading: (id: string) => void
+    setUploaded: (id: string) => void
     setConversionError: (id: string, error: string) => void
 }
 
@@ -49,6 +51,22 @@ export const useUploadStore = create<UploadState>((set) => ({
             files: state.files.map((item) =>
                 item.id === id
                     ? { ...item, status: "ready", wavFile, error: null }
+                    : item
+            ),
+        })),
+    setUploading: (id) =>
+        set((state) => ({
+            files: state.files.map((item) =>
+                item.id === id
+                    ? { ...item, status: "uploading", error: null }
+                    : item
+            ),
+        })),
+    setUploaded: (id) =>
+        set((state) => ({
+            files: state.files.map((item) =>
+                item.id === id
+                    ? { ...item, status: "uploaded", error: null }
                     : item
             ),
         })),

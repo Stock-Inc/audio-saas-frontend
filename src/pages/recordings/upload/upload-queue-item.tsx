@@ -35,6 +35,8 @@ export function UploadQueueItem({ item }: { item: QueuedAudioFile }) {
                     {status === "queued" && "В очереди"}
                     {status === "converting" && "Конвертация"}
                     {status === "ready" && "Готов к отправке"}
+                    {status === "uploading" && "Отправка"}
+                    {status === "uploaded" && "Отправлен"}
                     {status === "error" && "Ошибка"}
                 </Badge>
                 <Button
@@ -42,7 +44,7 @@ export function UploadQueueItem({ item }: { item: QueuedAudioFile }) {
                     variant="ghost"
                     size="icon-xs"
                     aria-label={`Убрать ${file.name} из очереди`}
-                    disabled={status === "converting"}
+                    disabled={status === "converting" || status === "uploading"}
                     onClick={() => removeFile(id)}
                 >
                     <RiCloseLine className="size-4" />
