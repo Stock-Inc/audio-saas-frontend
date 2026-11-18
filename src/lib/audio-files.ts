@@ -150,7 +150,7 @@ export async function moveAudioToFolder(
     const response = await fetch(
         `${backendUrl}/api/v1/audio/${encodeURIComponent(audioId)}/folder`,
         {
-            method: "PATCH",
+            method: "PUT",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ folderId }),
