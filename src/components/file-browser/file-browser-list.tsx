@@ -1,11 +1,7 @@
-import {
-    RiArrowRightSLine,
-    RiFileMusicLine,
-    RiFolderLine,
-} from "@remixicon/react"
-import { Link } from "react-router"
+import { RiFileMusicLine } from "@remixicon/react"
 
 import type { FolderPathItem } from "@/components/file-browser/file-browser"
+import { FolderRow } from "@/components/file-browser/folder-row"
 import { Badge } from "@/components/ui/badge"
 import type { AudioFile, Folder } from "@/lib/audio-files"
 import { formatFileSize } from "@/lib/format-file-size"
@@ -16,39 +12,6 @@ const statusLabels: Record<AudioFile["status"], string> = {
     PROCESSING: "Идёт обработка",
     COMPLETED: "Готово",
     FAILED: "Ошибка",
-}
-
-function FolderRow({
-    folder,
-    path,
-}: {
-    folder: Folder
-    path: FolderPathItem[]
-}) {
-    return (
-        <Link
-            to={`/recordings/folders/${folder.id}`}
-            state={{
-                folderPath: [...path, { id: folder.id, name: folder.name }],
-            }}
-            className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50"
-        >
-            <RiFolderLine
-                className="size-5 shrink-0 text-primary"
-                aria-hidden="true"
-            />
-            <span className="min-w-0 flex-1 truncate text-sm">
-                {folder.name}
-            </span>
-            <span className="hidden font-mono text-xs text-muted-foreground sm:inline">
-                Папка
-            </span>
-            <RiArrowRightSLine
-                className="size-4 shrink-0 text-muted-foreground"
-                aria-hidden="true"
-            />
-        </Link>
-    )
 }
 
 function AudioRow({ file }: { file: AudioFile }) {
@@ -83,10 +46,12 @@ export function FileBrowserList({
     folders,
     files,
     path,
+    onDeleted,
 }: {
     folders: Folder[]
     files: AudioFile[]
     path: FolderPathItem[]
+    onDeleted: () => void
 }) {
     if (folders.length === 0 && files.length === 0) {
         return (
@@ -112,6 +77,7 @@ export function FileBrowserList({
                                 key={folder.id}
                                 folder={folder}
                                 path={path}
+                                onDeleted={onDeleted}
                             />
                         ))}
                     </div>

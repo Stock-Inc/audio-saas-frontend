@@ -63,7 +63,11 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
 
     return (
         <>
-            <FileBrowserToolbar path={path} />
+            <FileBrowserToolbar
+                path={path}
+                folderId={folderId}
+                onCreated={retry}
+            />
             {loading ? (
                 <p
                     className="font-mono text-sm text-muted-foreground"
@@ -92,6 +96,7 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
                     folders={folders}
                     files={files}
                     path={path}
+                    onDeleted={retry}
                 />
             )}
         </>

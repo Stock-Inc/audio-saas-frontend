@@ -93,3 +93,31 @@ export async function getFolderChildren(
     }
     return folders
 }
+
+export async function createAudioFolder(name: string, parentId: string | null): Promise<void> {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(/\/+$/, "")
+    if (!backendUrl) throw new Error("Не задан адрес сервера")
+
+    const response = await fetch(`${backendUrl}/api/v1/folders`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ name, parentId }),
+    })
+    if (!response.ok) {
+        throw new Error(`Не удалось создать папку (HTTP ${response.status})`)
+    }
+}
+
+export async function deleteAudioFolder(id: string): Promise<void> {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(/\/+$/, "")
+    if (!backendUrl) throw new Error("Не задан адрес сервера")
+
+    const response = await fetch(`${backendUrl}/api/v1/folders/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "include",
+    })
+    if (!response.ok) {
+        throw new Error(`Не удалось удалить папку (HTTP ${response.status})`)
+    }
+}

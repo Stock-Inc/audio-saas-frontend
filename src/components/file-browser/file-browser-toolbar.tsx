@@ -1,13 +1,15 @@
 import { RiArrowRightSLine } from "@remixicon/react"
 import { Link } from "react-router"
 
+import { CreateFolderDialog } from "@/components/file-browser/create-folder-dialog"
 import type { FolderPathItem } from "@/components/file-browser/file-browser"
 
-export function FileBrowserToolbar({ path }: { path: FolderPathItem[] }) {
+export function FileBrowserToolbar({ path, folderId, onCreated }: { path: FolderPathItem[]; folderId: string | null; onCreated: () => void }) {
     return (
+        <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
         <nav
             aria-label="Путь"
-            className="mb-7 flex flex-wrap items-center gap-1 font-mono text-sm"
+            className="flex flex-wrap items-center gap-1 font-mono text-sm"
         >
             <Link
                 to="/recordings"
@@ -45,5 +47,7 @@ export function FileBrowserToolbar({ path }: { path: FolderPathItem[] }) {
                 </span>
             ))}
         </nav>
+        <CreateFolderDialog parentId={folderId} onCreated={onCreated} />
+        </div>
     )
 }
