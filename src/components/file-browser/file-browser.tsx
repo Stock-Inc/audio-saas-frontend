@@ -25,6 +25,10 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
             ? statePath
             : [{ id: folderId, name: "Папка" }]
         : []
+    const parentFolderId =
+        folderId && statePath?.at(-1)?.id === folderId
+            ? (statePath.at(-2)?.id ?? null)
+            : undefined
     const [folders, setFolders] = useState<Folder[]>([])
     const [files, setFiles] = useState<AudioFile[]>([])
     const [loading, setLoading] = useState(true)
@@ -132,6 +136,7 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
                     folders={folders}
                     files={files}
                     path={path}
+                    parentFolderId={parentFolderId}
                     onDeleted={retry}
                     currentFolderId={folderId}
                     onMove={moveItem}

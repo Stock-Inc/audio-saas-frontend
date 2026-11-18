@@ -2,6 +2,7 @@ import { RiFileMusicLine } from "@remixicon/react"
 
 import type { FolderPathItem } from "@/components/file-browser/file-browser"
 import { FolderRow } from "@/components/file-browser/folder-row"
+import { ParentFolderRow } from "@/components/file-browser/parent-folder-row"
 import { Badge } from "@/components/ui/badge"
 import type { AudioFile, Folder } from "@/lib/audio-files"
 import { startItemDrag, type DraggedItem } from "@/lib/file-browser-drag"
@@ -63,6 +64,7 @@ export function FileBrowserList({
     folders,
     files,
     path,
+    parentFolderId,
     onDeleted,
     currentFolderId,
     onMove,
@@ -70,11 +72,16 @@ export function FileBrowserList({
     folders: Folder[]
     files: AudioFile[]
     path: FolderPathItem[]
+    parentFolderId: string | null | undefined
     onDeleted: () => void
     currentFolderId: string | null
     onMove: (item: DraggedItem, targetFolderId: string | null) => Promise<void>
 }) {
-    if (folders.length === 0 && files.length === 0) {
+    if (
+        parentFolderId === undefined &&
+        folders.length === 0 &&
+        files.length === 0
+    ) {
         return (
             <p className="max-w-lg border border-border/60 bg-card p-5 font-mono text-sm text-muted-foreground">
                 В этой папке пока ничего нет.
@@ -84,15 +91,22 @@ export function FileBrowserList({
 
     return (
         <div className="max-w-lg space-y-6">
-            {folders.length > 0 && (
+            {(parentFolderId !== undefined || folders.length > 0) && (
                 <section aria-labelledby="folder-list-title">
                     <h2
                         id="folder-list-title"
                         className="mb-2 font-mono text-xs tracking-wide text-muted-foreground uppercase"
                     >
-                        Папки · {folders.length}
+                        Папки{folders.length > 0 && ` · ${folders.length}`}
                     </h2>
                     <div className="space-y-1.5">
+                        {parentFolderId !== undefined && (
+                            <ParentFolderRow
+                                parentFolderId={parentFolderId}
+                                path={path}
+                                onMove={onMove}
+                            />
+                        )}
                         {folders.map((folder) => (
                             <FolderRow
                                 key={folder.id}
@@ -123,6 +137,11 @@ export function FileBrowserList({
                         ))}
                     </div>
                 </section>
+            )}
+            {folders.length === 0 && files.length === 0 && (
+                <p className="border border-border/60 bg-card p-5 font-mono text-sm text-muted-foreground">
+                    В этой папке пока ничего нет.
+                </p>
             )}
         </div>
     )
