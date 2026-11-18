@@ -4,6 +4,7 @@ import type { FolderPathItem } from "@/components/file-browser/file-browser"
 import { FolderRow } from "@/components/file-browser/folder-row"
 import { Badge } from "@/components/ui/badge"
 import type { AudioFile, Folder } from "@/lib/audio-files"
+import { startItemDrag, type DraggedItem } from "@/lib/file-browser-drag"
 import { formatFileSize } from "@/lib/format-file-size"
 
 const statusLabels: Record<AudioFile["status"], string> = {
@@ -14,9 +15,25 @@ const statusLabels: Record<AudioFile["status"], string> = {
     FAILED: "Ошибка",
 }
 
-function AudioRow({ file }: { file: AudioFile }) {
+function AudioRow({
+    file,
+    currentFolderId,
+}: {
+    file: AudioFile
+    currentFolderId: string | null
+}) {
     return (
-        <div className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3">
+        <div
+            draggable
+            onDragStart={(event) =>
+                startItemDrag(event.dataTransfer, {
+                    kind: "audio",
+                    id: file.id,
+                    sourceFolderId: currentFolderId,
+                })
+            }
+            className="flex cursor-grab items-center gap-3 border border-border/60 bg-card px-3 py-3 active:cursor-grabbing"
+        >
             <RiFileMusicLine
                 className="size-5 shrink-0 text-muted-foreground"
                 aria-hidden="true"
@@ -47,11 +64,15 @@ export function FileBrowserList({
     files,
     path,
     onDeleted,
+    currentFolderId,
+    onMove,
 }: {
     folders: Folder[]
     files: AudioFile[]
     path: FolderPathItem[]
     onDeleted: () => void
+    currentFolderId: string | null
+    onMove: (item: DraggedItem, targetFolderId: string | null) => Promise<void>
 }) {
     if (folders.length === 0 && files.length === 0) {
         return (
@@ -78,6 +99,7 @@ export function FileBrowserList({
                                 folder={folder}
                                 path={path}
                                 onDeleted={onDeleted}
+                                onMove={onMove}
                             />
                         ))}
                     </div>
@@ -96,6 +118,7 @@ export function FileBrowserList({
                             <AudioRow
                                 key={file.id}
                                 file={file}
+                                currentFolderId={currentFolderId}
                             />
                         ))}
                     </div>

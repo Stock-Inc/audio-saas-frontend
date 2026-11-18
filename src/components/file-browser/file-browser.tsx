@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button"
 import {
     getAudioFiles,
     getFolderChildren,
+    moveAudioToFolder,
     type AudioFile,
     type Folder,
 } from "@/lib/audio-files"
+import type { DraggedItem } from "@/lib/file-browser-drag"
 
 export type FolderPathItem = Pick<Folder, "id" | "name">
 
@@ -27,6 +29,8 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
     const [files, setFiles] = useState<AudioFile[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [moveError, setMoveError] = useState<string | null>(null)
+    const [moving, setMoving] = useState(false)
     const [version, setVersion] = useState(0)
 
     useEffect(() => {
@@ -61,13 +65,45 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
         setVersion((current) => current + 1)
     }
 
+    async function moveItem(item: DraggedItem, targetFolderId: string | null) {
+        if (item.sourceFolderId === targetFolderId || moving) return
+        if (item.kind === "folder") {
+            setMoveError("Перемещение папок пока не подключено к серверу")
+            return
+        }
+
+        setMoving(true)
+        setMoveError(null)
+        try {
+            await moveAudioToFolder(item.id, targetFolderId)
+            retry()
+        } catch (cause) {
+            setMoveError(
+                cause instanceof Error
+                    ? cause.message
+                    : "Не удалось переместить файл"
+            )
+        } finally {
+            setMoving(false)
+        }
+    }
+
     return (
         <>
             <FileBrowserToolbar
                 path={path}
                 folderId={folderId}
                 onCreated={retry}
+                onMove={moveItem}
             />
+            {moveError && (
+                <p
+                    role="alert"
+                    className="mb-3 font-mono text-xs text-destructive"
+                >
+                    {moveError}
+                </p>
+            )}
             {loading ? (
                 <p
                     className="font-mono text-sm text-muted-foreground"
@@ -97,6 +133,8 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
                     files={files}
                     path={path}
                     onDeleted={retry}
+                    currentFolderId={folderId}
+                    onMove={moveItem}
                 />
             )}
         </>

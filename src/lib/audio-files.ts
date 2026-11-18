@@ -136,3 +136,27 @@ export async function deleteAudioFolder(id: string): Promise<void> {
         throw new Error(`Не удалось удалить папку (HTTP ${response.status})`)
     }
 }
+
+export async function moveAudioToFolder(
+    audioId: string,
+    folderId: string | null
+): Promise<void> {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(
+        /\/+$/,
+        ""
+    )
+    if (!backendUrl) throw new Error("Не задан адрес сервера")
+
+    const response = await fetch(
+        `${backendUrl}/api/v1/audio/${encodeURIComponent(audioId)}/folder`,
+        {
+            method: "PATCH",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ folderId }),
+        }
+    )
+    if (!response.ok) {
+        throw new Error(`Не удалось переместить файл (HTTP ${response.status})`)
+    }
+}

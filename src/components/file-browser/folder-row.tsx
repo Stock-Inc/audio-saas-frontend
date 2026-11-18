@@ -1,5 +1,6 @@
 import { RiArrowRightSLine, RiFolderLine } from "@remixicon/react"
 import { useState } from "react"
+import type { DragEvent } from "react"
 import { Link, useNavigate } from "react-router"
 
 import type { FolderPathItem } from "@/components/file-browser/file-browser"
@@ -21,20 +22,29 @@ import {
     ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import { deleteAudioFolder, type Folder } from "@/lib/audio-files"
+import {
+    fileBrowserDragType,
+    readDraggedItem,
+    startItemDrag,
+    type DraggedItem,
+} from "@/lib/file-browser-drag"
 
 export function FolderRow({
     folder,
     path,
     onDeleted,
+    onMove,
 }: {
     folder: Folder
     path: FolderPathItem[]
     onDeleted: () => void
+    onMove: (item: DraggedItem, targetFolderId: string | null) => Promise<void>
 }) {
     const navigate = useNavigate()
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [deleting, setDeleting] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [dragOver, setDragOver] = useState(false)
     const to = `/recordings/folders/${folder.id}`
     const state = {
         folderPath: [...path, { id: folder.id, name: folder.name }],
@@ -65,10 +75,35 @@ export function FolderRow({
         if (!open) setError(null)
     }
 
+    function handleDragOver(event: DragEvent<HTMLElement>) {
+        if (!event.dataTransfer.types.includes(fileBrowserDragType)) return
+        event.preventDefault()
+        event.dataTransfer.dropEffect = "move"
+        setDragOver(true)
+    }
+
+    function handleDrop(event: DragEvent<HTMLElement>) {
+        event.preventDefault()
+        setDragOver(false)
+        const item = readDraggedItem(event.dataTransfer)
+        if (item && item.id !== folder.id) void onMove(item, folder.id)
+    }
+
     return (
         <>
             <ContextMenu>
                 <ContextMenuTrigger
+                    draggable
+                    onDragStart={(event) =>
+                        startItemDrag(event.dataTransfer, {
+                            kind: "folder",
+                            id: folder.id,
+                            sourceFolderId: folder.parentId,
+                        })
+                    }
+                    onDragOver={handleDragOver}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
                     render={
                         <Link
                             to={to}
@@ -76,7 +111,7 @@ export function FolderRow({
                             aria-label={`Открыть ${folder.name}`}
                         />
                     }
-                    className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50"
+                    className={`flex cursor-grab items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50 active:cursor-grabbing ${dragOver ? "border-primary bg-primary/10" : ""}`}
                 >
                     <RiFolderLine
                         className="size-5 shrink-0 text-primary"
