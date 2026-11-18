@@ -46,16 +46,24 @@ export function CreateFolderDialog({
         try {
             await createAudioFolder(trimmedName, parentId)
             setPending(false)
-            handleOpenChange(false)
+            setOpen(false)
+            setName("")
             onCreated()
         } catch (cause) {
-            setError(cause instanceof Error ? cause.message : "Не удалось создать папку")
+            setError(
+                cause instanceof Error
+                    ? cause.message
+                    : "Не удалось создать папку"
+            )
             setPending(false)
         }
     }
 
     return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
+        <Dialog
+            open={open}
+            onOpenChange={handleOpenChange}
+        >
             <DialogTrigger
                 render={
                     <Button
@@ -72,9 +80,14 @@ export function CreateFolderDialog({
             <DialogContent showCloseButton={false}>
                 <DialogHeader>
                     <DialogTitle>Новая папка</DialogTitle>
-                    <DialogDescription>Папка появится в текущем разделе записей.</DialogDescription>
+                    <DialogDescription>
+                        Папка появится в текущем разделе записей.
+                    </DialogDescription>
                 </DialogHeader>
-                <form onSubmit={(event) => void handleSubmit(event)} className="space-y-5">
+                <form
+                    onSubmit={(event) => void handleSubmit(event)}
+                    className="space-y-5"
+                >
                     <div className="space-y-2">
                         <Label htmlFor="new-folder-name">Название папки</Label>
                         <Input
@@ -88,10 +101,29 @@ export function CreateFolderDialog({
                             className="border border-border/70 bg-card px-3"
                         />
                     </div>
-                    {error && <p role="alert" className="font-mono text-xs text-destructive">{error}</p>}
+                    {error && (
+                        <p
+                            role="alert"
+                            className="font-mono text-xs text-destructive"
+                        >
+                            {error}
+                        </p>
+                    )}
                     <DialogFooter>
-                        <Button type="button" variant="secondary" size="sm" disabled={pending} onClick={() => handleOpenChange(false)}>Отмена</Button>
-                        <Button type="submit" size="sm" disabled={!name.trim() || pending}>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            disabled={pending}
+                            onClick={() => handleOpenChange(false)}
+                        >
+                            Отмена
+                        </Button>
+                        <Button
+                            type="submit"
+                            size="sm"
+                            disabled={!name.trim() || pending}
+                        >
                             {pending ? "Создаём..." : "Создать"}
                         </Button>
                     </DialogFooter>
