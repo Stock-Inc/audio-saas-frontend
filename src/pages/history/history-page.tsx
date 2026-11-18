@@ -1,14 +1,113 @@
-import { RiArrowRightSLine, RiFileMusicLine } from "@remixicon/react"
+import { RiFileMusicLine } from "@remixicon/react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router"
 
-import { FileContextMenu } from "@/components/file-browser/file-context-menu"
 import { PageHeading } from "@/components/page-heading"
 import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
-import { useDemoLibrary } from "@/lib/demo-library-context"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { getAudioFiles, type AudioFile } from "@/lib/audio-files"
+import { formatFileSize } from "@/lib/format-file-size"
+import type { AudioStatus } from "@/lib/upload-audio"
+
+const statusLabels: Record<AudioStatus, string> = {
+    RECEIVED: "Файл сохранён",
+    FORWARDED: "Задание принято",
+    PROCESSING: "Идёт обработка",
+    COMPLETED: "Готово",
+    FAILED: "Ошибка обработки",
+}
+
+function formatDate(value: string) {
+    const date = new Date(value)
+    return Number.isNaN(date.getTime())
+        ? value
+        : new Intl.DateTimeFormat("ru-RU", {
+              dateStyle: "medium",
+              timeStyle: "short",
+          }).format(date)
+}
+
+function HistoryItem({ file }: { file: AudioFile }) {
+    return (
+        <li className="flex items-start gap-3 border border-border/60 bg-card px-3 py-3">
+            <RiFileMusicLine
+                className="mt-0.5 size-5 shrink-0 text-primary"
+                aria-hidden="true"
+            />
+            <div className="min-w-0 flex-1">
+                <p className="truncate text-sm">{file.originalFilename}</p>
+                <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                    {formatDate(file.createdAt)} ·{" "}
+                    {formatFileSize(file.sizeBytes)}
+                    {file.folder && ` · ${file.folder.name}`}
+                </p>
+                {file.tags.length > 0 && (
+                    <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                        {file.tags.map((tag) => tag.name).join(", ")}
+                    </p>
+                )}
+                {file.resultAvailable && file.resultFilename && (
+                    <p className="mt-1 truncate font-mono text-xs text-muted-foreground">
+                        Результат: {file.resultFilename}
+                        {file.resultSizeBytes !== null &&
+                            ` · ${formatFileSize(file.resultSizeBytes)}`}
+                    </p>
+                )}
+                {file.status === "FAILED" && file.errorMessage && (
+                    <p className="mt-1 font-mono text-xs text-destructive">
+                        {file.errorMessage}
+                    </p>
+                )}
+            </div>
+            <Badge
+                variant={file.status === "FAILED" ? "destructive" : "secondary"}
+                className="shrink-0 font-normal tracking-normal normal-case"
+            >
+                {statusLabels[file.status] ?? file.status}
+            </Badge>
+        </li>
+    )
+}
 
 export function HistoryPage() {
-    const { recordings } = useDemoLibrary()
+    const [version, setVersion] = useState(0)
+    const [files, setFiles] = useState<AudioFile[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const controller = new AbortController()
+        void getAudioFiles(controller.signal)
+            .then((result) => {
+                if (controller.signal.aborted) return
+                setFiles(
+                    [...result].sort(
+                        (a, b) =>
+                            new Date(b.createdAt).getTime() -
+                            new Date(a.createdAt).getTime()
+                    )
+                )
+                setError(null)
+                setLoading(false)
+            })
+            .catch((cause: unknown) => {
+                if (controller.signal.aborted) return
+                setError(
+                    cause instanceof Error
+                        ? cause.message
+                        : "Не удалось загрузить историю"
+                )
+                setLoading(false)
+            })
+
+        return () => controller.abort()
+    }, [version])
+
+    function retry() {
+        setLoading(true)
+        setError(null)
+        setVersion((current) => current + 1)
+    }
 
     return (
         <>
@@ -34,48 +133,46 @@ export function HistoryPage() {
                     >
                         Загруженные файлы
                     </h2>
-                    <span className="font-mono text-xs text-muted-foreground">
-                        Всего: {recordings.length}
-                    </span>
+                    {!loading && !error && (
+                        <span className="font-mono text-xs text-muted-foreground">
+                            Всего: {files.length}
+                        </span>
+                    )}
                 </div>
-                {recordings.length === 0 ? (
+                {loading ? (
+                    <p
+                        className="font-mono text-sm text-muted-foreground"
+                        role="status"
+                    >
+                        Загружаем историю...
+                    </p>
+                ) : error ? (
+                    <div className="space-y-3 border border-border/60 bg-card p-5">
+                        <p
+                            className="font-mono text-sm text-destructive"
+                            role="alert"
+                        >
+                            {error}
+                        </p>
+                        <Button
+                            type="button"
+                            size="xs"
+                            onClick={retry}
+                        >
+                            Повторить
+                        </Button>
+                    </div>
+                ) : files.length === 0 ? (
                     <div className="border border-border/60 bg-card p-5 font-mono text-sm text-muted-foreground">
                         Вы пока не загрузили ни одного файла.
                     </div>
                 ) : (
                     <ul className="space-y-1.5">
-                        {recordings.map((recording) => (
-                            <li key={recording.id}>
-                                <FileContextMenu
-                                    recording={recording}
-                                    className="flex items-center gap-3 border border-border/60 bg-card px-3 py-3 transition-colors hover:border-primary/50 hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                                >
-                                    <RiFileMusicLine
-                                        className="size-5 shrink-0 text-primary"
-                                        aria-hidden="true"
-                                    />
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm">
-                                            {recording.fileName}
-                                        </p>
-                                        <p className="mt-0.5 truncate font-mono text-xs text-muted-foreground">
-                                            {recording.name} ·{" "}
-                                            {recording.uploadedAt} ·{" "}
-                                            {recording.duration}
-                                        </p>
-                                    </div>
-                                    <Badge
-                                        variant="secondary"
-                                        className="hidden shrink-0 font-normal tracking-normal normal-case sm:inline-flex"
-                                    >
-                                        {recording.status}
-                                    </Badge>
-                                    <RiArrowRightSLine
-                                        className="size-4 shrink-0 text-muted-foreground"
-                                        aria-hidden="true"
-                                    />
-                                </FileContextMenu>
-                            </li>
+                        {files.map((file) => (
+                            <HistoryItem
+                                key={file.id}
+                                file={file}
+                            />
                         ))}
                     </ul>
                 )}

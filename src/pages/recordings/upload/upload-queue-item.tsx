@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { getAudioStatus } from "@/lib/upload-audio"
 import { useUploadStore, type QueuedAudioFile } from "@/lib/stores/upload-store"
-import { formatFileSize } from "@/pages/recordings/upload/format-file-size"
+import { formatFileSize } from "@/lib/format-file-size"
 
 export function UploadQueueItem({ item }: { item: QueuedAudioFile }) {
     const {

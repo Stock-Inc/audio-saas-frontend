@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card"
 import { useUploadStore } from "@/lib/stores/upload-store"
-import { formatFileSize } from "@/pages/recordings/upload/format-file-size"
+import { formatFileSize } from "@/lib/format-file-size"
 import { UploadQueueItem } from "@/pages/recordings/upload/upload-queue-item"
 
 export function UploadQueue() {
