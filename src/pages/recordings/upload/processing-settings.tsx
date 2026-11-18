@@ -18,19 +18,35 @@ export function ProcessingSettings() {
         (item) => item.status === "converting" || item.status === "uploading"
     )
     const hasPendingFiles = files.some(
-        (item) => item.status === "queued" || item.status === "ready" || item.status === "error"
+        (item) =>
+            item.status === "queued" ||
+            item.status === "ready" ||
+            item.status === "error"
     )
 
     async function handleUpload() {
         const store = useUploadStore.getState()
-        if (store.files.some((item) => item.status === "converting" || item.status === "uploading")) return
+        if (
+            store.files.some(
+                (item) =>
+                    item.status === "converting" || item.status === "uploading"
+            )
+        )
+            return
 
         const pendingIds = store.files
-            .filter((item) => item.status === "queued" || item.status === "ready" || item.status === "error")
+            .filter(
+                (item) =>
+                    item.status === "queued" ||
+                    item.status === "ready" ||
+                    item.status === "error"
+            )
             .map((item) => item.id)
 
         for (const id of pendingIds) {
-            const item = useUploadStore.getState().files.find((file) => file.id === id)
+            const item = useUploadStore
+                .getState()
+                .files.find((file) => file.id === id)
             if (!item) continue
 
             let wavFile = item.wavFile
@@ -40,23 +56,31 @@ export function ProcessingSettings() {
                     wavFile = await convertToWav(item.file, id)
                     useUploadStore.getState().setConverted(id, wavFile)
                 } catch (error) {
-                    useUploadStore.getState().setConversionError(
-                        id,
-                        error instanceof Error ? error.message : "Не удалось конвертировать файл"
-                    )
+                    useUploadStore
+                        .getState()
+                        .setConversionError(
+                            id,
+                            error instanceof Error
+                                ? error.message
+                                : "Не удалось конвертировать файл"
+                        )
                     continue
                 }
             }
 
             useUploadStore.getState().setUploading(id)
             try {
-                await uploadAudio(wavFile, id, options)
-                useUploadStore.getState().setUploaded(id)
+                const job = await uploadAudio(wavFile, options)
+                useUploadStore.getState().setUploaded(id, job)
             } catch (error) {
-                useUploadStore.getState().setConversionError(
-                    id,
-                    error instanceof Error ? error.message : "Не удалось отправить файл"
-                )
+                useUploadStore
+                    .getState()
+                    .setConversionError(
+                        id,
+                        error instanceof Error
+                            ? error.message
+                            : "Не удалось отправить файл"
+                    )
             }
         }
     }
@@ -72,7 +96,9 @@ export function ProcessingSettings() {
                 <span className="font-mono text-sm">Разделение спикеров</span>
                 <Switch
                     checked={options.diarization}
-                    onCheckedChange={(checked) => setOption("diarization", checked)}
+                    onCheckedChange={(checked) =>
+                        setOption("diarization", checked)
+                    }
                     aria-label="Разделение спикеров"
                 />
             </div>
