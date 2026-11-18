@@ -1,14 +1,10 @@
 import { Navigate, useParams } from "react-router"
 
 import { FileBrowser } from "@/components/file-browser/file-browser"
-import { useDemoLibrary } from "@/lib/demo-library-context"
 
 export function FolderPage() {
     const { folderId } = useParams()
-    const { folders } = useDemoLibrary()
-    const folder = folders.find((item) => item.id === folderId)
-
-    if (!folder) {
+    if (!folderId) {
         return (
             <Navigate
                 to="/recordings"
@@ -17,5 +13,10 @@ export function FolderPage() {
         )
     }
 
-    return <FileBrowser folderId={folder.id} />
+    return (
+        <FileBrowser
+            key={folderId}
+            folderId={folderId}
+        />
+    )
 }
