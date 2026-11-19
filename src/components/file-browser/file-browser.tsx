@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useLocation } from "react-router"
 
 import { FileBrowserList } from "@/components/file-browser/file-browser-list"
+import { FileBrowserSkeleton } from "@/components/file-browser/file-browser-skeleton"
 import { FileBrowserToolbar } from "@/components/file-browser/file-browser-toolbar"
 import { Button } from "@/components/ui/button"
 import {
@@ -109,12 +110,9 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
                 </p>
             )}
             {loading ? (
-                <p
-                    className="font-mono text-sm text-muted-foreground"
-                    role="status"
-                >
-                    Загружаем папку...
-                </p>
+                <FileBrowserSkeleton
+                    hasParentFolder={parentFolderId !== undefined}
+                />
             ) : error ? (
                 <div className="max-w-lg space-y-3 border border-border/60 bg-card p-5">
                     <p
