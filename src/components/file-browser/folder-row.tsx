@@ -4,6 +4,7 @@ import type { DragEvent } from "react"
 import { Link, useNavigate } from "react-router"
 
 import type { FolderPathItem } from "@/components/file-browser/file-browser"
+import { RenameFolderDialog } from "@/components/file-browser/rename-folder-dialog"
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -32,16 +33,17 @@ import {
 export function FolderRow({
     folder,
     path,
-    onDeleted,
+    onChanged,
     onMove,
 }: {
     folder: Folder
     path: FolderPathItem[]
-    onDeleted: () => void
+    onChanged: () => void
     onMove: (item: DraggedItem, targetFolderId: string | null) => Promise<void>
 }) {
     const navigate = useNavigate()
     const [deleteOpen, setDeleteOpen] = useState(false)
+    const [renameOpen, setRenameOpen] = useState(false)
     const [deleting, setDeleting] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [dragOver, setDragOver] = useState(false)
@@ -57,7 +59,7 @@ export function FolderRow({
         try {
             await deleteAudioFolder(folder.id)
             setDeleteOpen(false)
-            onDeleted()
+            onChanged()
         } catch (cause) {
             setError(
                 cause instanceof Error
@@ -132,6 +134,9 @@ export function FolderRow({
                     <ContextMenuItem onClick={() => navigate(to, { state })}>
                         Открыть
                     </ContextMenuItem>
+                    <ContextMenuItem onClick={() => setRenameOpen(true)}>
+                        Переименовать
+                    </ContextMenuItem>
                     <ContextMenuSeparator />
                     <ContextMenuItem
                         variant="destructive"
@@ -141,6 +146,13 @@ export function FolderRow({
                     </ContextMenuItem>
                 </ContextMenuContent>
             </ContextMenu>
+            {renameOpen && (
+                <RenameFolderDialog
+                    folder={folder}
+                    onClose={() => setRenameOpen(false)}
+                    onRenamed={onChanged}
+                />
+            )}
             <AlertDialog
                 open={deleteOpen}
                 onOpenChange={handleDeleteOpenChange}

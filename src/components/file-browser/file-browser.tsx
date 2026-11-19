@@ -137,7 +137,7 @@ export function FileBrowser({ folderId = null }: { folderId?: string | null }) {
                     files={files}
                     path={path}
                     parentFolderId={parentFolderId}
-                    onDeleted={retry}
+                    onChanged={retry}
                     currentFolderId={folderId}
                     onMove={moveItem}
                 />

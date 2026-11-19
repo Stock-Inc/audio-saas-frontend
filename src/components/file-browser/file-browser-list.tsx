@@ -65,7 +65,7 @@ export function FileBrowserList({
     files,
     path,
     parentFolderId,
-    onDeleted,
+    onChanged,
     currentFolderId,
     onMove,
 }: {
@@ -73,7 +73,7 @@ export function FileBrowserList({
     files: AudioFile[]
     path: FolderPathItem[]
     parentFolderId: string | null | undefined
-    onDeleted: () => void
+    onChanged: () => void
     currentFolderId: string | null
     onMove: (item: DraggedItem, targetFolderId: string | null) => Promise<void>
 }) {
@@ -112,7 +112,7 @@ export function FileBrowserList({
                                 key={folder.id}
                                 folder={folder}
                                 path={path}
-                                onDeleted={onDeleted}
+                                onChanged={onChanged}
                                 onMove={onMove}
                             />
                         ))}

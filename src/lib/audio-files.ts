@@ -137,6 +137,32 @@ export async function deleteAudioFolder(id: string): Promise<void> {
     }
 }
 
+export async function renameAudioFolder(
+    id: string,
+    name: string
+): Promise<void> {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL?.trim().replace(
+        /\/+$/,
+        ""
+    )
+    if (!backendUrl) throw new Error("Не задан адрес сервера")
+
+    const response = await fetch(
+        `${backendUrl}/api/v1/folders/${encodeURIComponent(id)}`,
+        {
+            method: "PATCH",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name }),
+        }
+    )
+    if (!response.ok) {
+        throw new Error(
+            `Не удалось переименовать папку (HTTP ${response.status})`
+        )
+    }
+}
+
 export async function moveAudioToFolder(
     audioId: string,
     folderId: string | null
